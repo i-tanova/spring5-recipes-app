@@ -6,7 +6,36 @@
 </head>
 <body>
 
-<h1 th:text="'My Recipes !!!'"></h1>
+<h1 th:text="'Simple Recipes'"></h1>
 
+<ul th:each="recipe : ${recipes}">
+
+    <h2 th:text="${recipe.description}"></h2>
+    <p>
+        Prep time: [[${recipe.prepTime}]] minutes
+    </p>
+
+    <p>
+    <div th:if="${recipe.difficulty.name() == 'EASY'}">
+        Difficulty: Easy
+    </div>
+    </p>
+
+    <p>
+        [[${recipe.notes.recipeNotes}]]
+    </p>
+
+    <p>
+    <ul th:each="ingredient : ${recipe.ingredientSet}">
+        <li> [[${ingredient.amount}]] [[*{ingredient.unitOfMeasure != null}?
+            *{ingredient.unitOfMeasure.abbreviation} : '']] [[${ingredient.description}]]
+        </li>
+    </ul>
+    </p>
+
+    <p>
+        [[${recipe.directions}]]
+    </p>
+</ul>
 </body>
 </html>
