@@ -4,7 +4,10 @@ import com.ivana.tanova.recipesspringapp.domain.*;
 import com.ivana.tanova.recipesspringapp.services.CategoryService;
 import com.ivana.tanova.recipesspringapp.services.RecipesService;
 import com.ivana.tanova.recipesspringapp.services.UnitOfMeasureService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -12,7 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class DataLoader implements CommandLineRunner {
+@Slf4j
+public class DataLoader implements CommandLineRunner, ApplicationListener<ContextRefreshedEvent> {
       private final RecipesService recipesService;
       private final CategoryService categoryService;
       private final UnitOfMeasureService unitOfMeasureService;
@@ -22,7 +26,6 @@ public class DataLoader implements CommandLineRunner {
         this.categoryService = categoryService;
         this.unitOfMeasureService = unitOfMeasureService;
     }
-
 
     @Override
     public void run(String... args) throws Exception {
@@ -108,7 +111,6 @@ public class DataLoader implements CommandLineRunner {
         notes.setRecipeNotes("Spicy grilled chicken tacos! Quick marinade, then grill. Ready in about 30 minutes. Great for a quick weeknight dinner, backyard cookouts, and tailgate parties.");
         // WE DONT NEED TO DO THAT notes.setRecipe(savedSpicyTakos);
         spicyChickenTakos.setNotes(notes);
-        notes.setRecipe(spicyChickenTakos);
 
         UnitOfMeasure teaspoon = unitOfMeasureService.findByAbbreviation("teaspoon");
         UnitOfMeasure dash = unitOfMeasureService.findByAbbreviation("dash");
@@ -118,19 +120,16 @@ public class DataLoader implements CommandLineRunner {
         ancho.setAmount(new BigDecimal(2));
         ancho.setUnitOfMeasure(tablespoon);
         ancho.setDescription("ancho chili powder");
-        ancho.setRecipe(spicyChickenTakos);
 
         Ingredient oregano = new Ingredient();
         oregano.setDescription("dried oregano");
         oregano.setAmount(new BigDecimal(1));
         oregano.setUnitOfMeasure(teaspoon);
-        oregano.setRecipe(spicyChickenTakos);
 
         Ingredient cumin = new Ingredient();
         cumin.setDescription("dried cumin");
         cumin.setAmount(new BigDecimal(1));
         cumin.setUnitOfMeasure(teaspoon);
-        cumin.setRecipe(spicyChickenTakos);
 
         Set<Ingredient> ingredientsSet = new HashSet<Ingredient>();
         ingredientsSet.add(ancho);
@@ -140,5 +139,10 @@ public class DataLoader implements CommandLineRunner {
 
         recipesService.save(spicyChickenTakos);
         System.out.println("Recipe saved");
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+         log.debug("On Context Refreshed event");
     }
 }

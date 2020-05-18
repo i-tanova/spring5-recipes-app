@@ -2,11 +2,11 @@ package com.ivana.tanova.recipesspringapp.services;
 
 import com.ivana.tanova.recipesspringapp.domain.Recipe;
 import com.ivana.tanova.recipesspringapp.repositories.RecipeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
+@Slf4j
 public class RecipesServiceImpl implements RecipesService {
     private final RecipeRepository recipeRepository;
 
@@ -16,6 +16,7 @@ public class RecipesServiceImpl implements RecipesService {
 
     @Override
     public Iterable<Recipe> getAll() {
+        log.debug("Get recipes");
         return recipeRepository.findAll();
     }
 
